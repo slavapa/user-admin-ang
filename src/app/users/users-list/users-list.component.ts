@@ -11,7 +11,7 @@ export class UsersListComponent implements OnInit {
   currentUser: UserModel | undefined;
 
   @Input()
-  users: UserModel[] | undefined;
+  users: UserModel[] | null | undefined;
 
   @Output()
   userClicked: EventEmitter<UserModel> = new EventEmitter();

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UserInfo, UserModel } from 'src/app/models/user-model';
+import { IUserForm, UserInfo, UserModel } from 'src/app/models/user-model';
 import {UsersService} from '../users.service';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-user-container',
@@ -14,31 +18,49 @@ export class UserContainerComponent implements OnInit {
   // username = "Slava";
   // email = "slavapas13@gmail.com";
   currentUser!: UserModel;
-  users: UserModel[] = [];
+  // users!: UserModel[];
+  // myUser:  UserModel[] | undefined
+  users$!: Observable<UserModel[]>;
   
 
-  constructor(private service: UsersService) {
+  constructor(private service: UsersService, private router: Router) {
     // this.currentUser = new UserModel(-1, '-1', '-1',
     //   new UserInfo('-1', '-1', '-1', '-1'));
    }
    
 
-   updateUser(user: UserModel){
-
-    if (this.service.updateUser(user)){
+   updateUser(user: IUserForm){
+    // if (this.service.updateUser(user)){
+    //   this.getUsers();
+    // }
+    this.service.updateUser(Object.assign({}, this.currentUser, user))
+    .subscribe((user) => {
       this.getUsers();
-    }
+    })
 
 }
 
 deleteUser(user: UserModel){
-  if (this.service.deletedUser(user.id)){
+  this.service.deletedUser(user.id)
+  .subscribe((data) => {
+  console.log(data);
     this.getUsers();
-  }
+  })
+  // if (this.service.deletedUser(user.id)){
+  //   this.getUsers();
+  // }
 }
+
+// private getUsersSync(){
+//   this.users = this.service.getUsersSync();
+// }
+
 private getUsers(){
-  this.users = this.service.getUsers();
+  // this.service.getUsers()
+  //     .subscribe(users => this.users = users);
+  this.users$ = this.service.getUsers();
 }
+
 ngOnInit() {
   console.log('User Container Init');
 
@@ -46,7 +68,8 @@ ngOnInit() {
 }
 
 onItemClicked(user: UserModel){
-  this.currentUser = user;
+  // this.currentUser = user;
+  this.router.navigate(['/users', user.id]);
 }
 
 

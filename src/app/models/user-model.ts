@@ -4,7 +4,7 @@ export class UserModel {
     public id: number,
     public username: string= '',
     public email: string= '',
-    public info: UserInfo= new UserInfo()
+    public info: UserInfo = new UserInfo()
   ){}
 };
 
@@ -18,3 +18,12 @@ export class UserInfo{
     public phoneNumber: string= ''
   ){}
 };
+
+export interface IUserForm {
+  username: string,
+  email: string,
+  id?: number,
+  firstName?: string,
+  lastName?: string,
+  avatar?: string
+}
